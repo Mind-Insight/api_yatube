@@ -1,30 +1,30 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
+from api.constants import MAX_TEXT_LENGTH
+
 User = get_user_model()
 
 
 class Group(models.Model):
-    title = models.CharField(max_length=200, verbose_name="Название")
-    slug = models.SlugField(unique=True, verbose_name="Слаг")
-    description = models.TextField(verbose_name="Описание")
+    title = models.CharField("Название", max_length=200)
+    slug = models.SlugField("Слаг", unique=True)
+    description = models.TextField("Описание")
 
     def __str__(self):
-        return self.title[:30]
+        return self.title[:MAX_TEXT_LENGTH]
 
 
 class Post(models.Model):
-    text = models.TextField(verbose_name="Текст")
-    pub_date = models.DateTimeField(
-        auto_now_add=True, verbose_name="Дата публикации"
-    )
+    text = models.TextField("Текст")
+    pub_date = models.DateTimeField("Дата публикации", auto_now_add=True)
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         verbose_name="автор",
     )
     image = models.ImageField(
-        upload_to="posts/", null=True, blank=True, verbose_name="Изображение"
+        "Изображение", upload_to="posts/", null=True, blank=True
     )
     group = models.ForeignKey(
         Group,
@@ -38,7 +38,7 @@ class Post(models.Model):
         default_related_name = "posts"
 
     def __str__(self):
-        return self.text[:30]
+        return self.text[:MAX_TEXT_LENGTH]
 
 
 class Comment(models.Model):
@@ -54,10 +54,10 @@ class Comment(models.Model):
         related_name="comments",
         verbose_name="Пост",
     )
-    text = models.TextField(verbose_name="Текст")
+    text = models.TextField("Текст")
     created = models.DateTimeField(
-        auto_now_add=True, db_index=True, verbose_name="Дата добавления"
+        "Дата добавления", auto_now_add=True, db_index=True
     )
 
     def __str__(self):
-        return self.text[:30]
+        return self.text[:MAX_TEXT_LENGTH]
